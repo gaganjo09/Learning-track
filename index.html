@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0A1118">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Health">
+<title>Daily Health Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=4">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"></div>
+
+<!-- ============ ICON SPRITE ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+
+<!-- faces -->
+<g id="i-face-great"><circle cx="12" cy="12" r="9"/><path d="M7.8 13.6c.9 1.9 2.4 2.9 4.2 2.9s3.3-1 4.2-2.9"/><path d="M8.4 9.2h.01M15.6 9.2h.01" stroke-width="2.6" stroke-linecap="round"/></g>
+<g id="i-face-good"><circle cx="12" cy="12" r="9"/><path d="M8.4 14.2c.8 1.2 2.1 1.9 3.6 1.9s2.8-.7 3.6-1.9"/><path d="M8.6 9.4h.01M15.4 9.4h.01" stroke-width="2.6" stroke-linecap="round"/></g>
+<g id="i-face-ok"><circle cx="12" cy="12" r="9"/><path d="M8.6 14.8h6.8"/><path d="M8.6 9.4h.01M15.4 9.4h.01" stroke-width="2.6" stroke-linecap="round"/></g>
+<g id="i-face-bad"><circle cx="12" cy="12" r="9"/><path d="M8.4 16c.8-1.2 2.1-1.9 3.6-1.9s2.8.7 3.6 1.9"/><path d="M8.6 9.4h.01M15.4 9.4h.01" stroke-width="2.6" stroke-linecap="round"/></g>
+<g id="i-face-rough"><circle cx="12" cy="12" r="9"/><path d="M7.8 16.4c.9-1.9 2.4-2.9 4.2-2.9s3.3 1 4.2 2.9"/><path d="M7.6 8.6l2 1.4M16.4 8.6l-2 1.4"/></g>
+
+<!-- battery / energy -->
+<g id="i-batt-full"><rect x="2.5" y="7.5" width="16" height="9" rx="2.4"/><path d="M21 10.6v2.8"/><rect x="4.6" y="9.6" width="11.8" height="4.8" rx="1" fill="currentColor" stroke="none"/></g>
+<g id="i-batt-mid"><rect x="2.5" y="7.5" width="16" height="9" rx="2.4"/><path d="M21 10.6v2.8"/><rect x="4.6" y="9.6" width="7" height="4.8" rx="1" fill="currentColor" stroke="none"/></g>
+<g id="i-batt-low"><rect x="2.5" y="7.5" width="16" height="9" rx="2.4"/><path d="M21 10.6v2.8"/><rect x="4.6" y="9.6" width="3.4" height="4.8" rx="1" fill="currentColor" stroke="none"/></g>
+<g id="i-batt-empty"><rect x="2.5" y="7.5" width="16" height="9" rx="2.4"/><path d="M21 10.6v2.8"/><path d="M7 12h5" stroke-width="2"/></g>
+
+<!-- mind -->
+<g id="i-mind-calm"><path d="M3 12h3.5M17.5 12H21"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></g>
+<g id="i-mind-normal"><path d="M3 12c2-2.6 4-2.6 6 0s4 2.6 6 0 4-2.6 6 0"/></g>
+<g id="i-mind-restless"><path d="M3 12c1.4-3.4 2.8 3.4 4.2 0s2.8 3.4 4.2 0 2.8 3.4 4.2 0 2.8 3.4 4.2 0"/></g>
+<g id="i-mind-racing"><path d="M3 14.5c2-5.5 3-5.5 4.5 0S10 20 11.5 9.5 14 4 15.5 14.5 18 20 21 9"/></g>
+
+<!-- moon / sleep -->
+<g id="i-moon"><path d="M20.5 14.2A8.6 8.6 0 1 1 10.4 3.4a6.8 6.8 0 0 0 10.1 10.8z"/></g>
+<g id="i-zzz"><path d="M4 7.5h6L4 15h6"/><path d="M13.5 4.5h5l-5 5.5h5" stroke-width="1.5"/></g>
+<g id="i-sleep-broken"><path d="M20.5 14.2A8.6 8.6 0 1 1 10.4 3.4a6.8 6.8 0 0 0 10.1 10.8z"/><path d="M3.5 20.5l17-17" stroke-width="1.6"/></g>
+<g id="i-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"/></g>
+
+<!-- eye -->
+<g id="i-eye-closed"><path d="M3 12.5s3.2 4.5 9 4.5 9-4.5 9-4.5"/><path d="M6 15.4L4.6 17.8M12 17v2.6M18 15.4l1.4 2.4"/></g>
+<g id="i-eye-open"><path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/></g>
+<g id="i-eye-multi"><path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M12 2.5v1.8M4.5 5l1.2 1.3M19.5 5l-1.2 1.3"/></g>
+
+<!-- intensity dots -->
+<g id="i-lvl-0"><circle cx="12" cy="12" r="8.4"/><path d="M8.8 12h6.4" stroke-width="2"/></g>
+<g id="i-lvl-1"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/></g>
+<g id="i-lvl-2"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></g>
+<g id="i-lvl-3"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/></g>
+
+<!-- yes / no -->
+<g id="i-yes"><circle cx="12" cy="12" r="8.6"/><path d="M8.2 12.2l2.6 2.6 5-5.4" stroke-width="2"/></g>
+<g id="i-no"><circle cx="12" cy="12" r="8.6"/><path d="M9 9l6 6M15 9l-6 6" stroke-width="2"/></g>
+
+<!-- body / sides -->
+<g id="i-side-left"><path d="M12 3v18" stroke-dasharray="2 2.4" stroke-width="1.3"/><path d="M9.6 8.4L5.4 12l4.2 3.6"/><path d="M5.8 12H11"/></g>
+<g id="i-side-right"><path d="M12 3v18" stroke-dasharray="2 2.4" stroke-width="1.3"/><path d="M14.4 8.4l4.2 3.6-4.2 3.6"/><path d="M13 12h5.2"/></g>
+<g id="i-side-both"><path d="M12 3v18" stroke-dasharray="2 2.4" stroke-width="1.3"/><path d="M8.6 9L5.6 12l3 3M15.4 9l3 3-3 3"/><path d="M6 12h12"/></g>
+
+<!-- spine / neck -->
+<g id="i-neck"><circle cx="12" cy="5" r="2.4"/><path d="M12 7.6v4M9.4 11.6h5.2M10.4 15h3.2M10.8 18.4h2.4"/></g>
+<g id="i-joint"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="16" r="3"/><path d="M10.1 10.1l3.8 3.8"/><path d="M18.6 5.4l1.8-1.8M20.4 8.2l1.4-.6"/></g>
+<g id="i-stiff"><path d="M5 7h14M5 12h14M5 17h14" stroke-dasharray="3 2.5"/></g>
+
+<!-- flames -->
+<g id="i-flame-1"><path d="M12 3.5c0 3.4-4 4.6-4 8.4a4 4 0 0 0 8 0c0-3.8-4-5-4-8.4z"/></g>
+<g id="i-flame-2"><path d="M9 4c0 2.8-3 3.8-3 6.9a3.2 3.2 0 0 0 6.4 0C12.4 7.8 9 6.8 9 4z"/><path d="M16 8c0 2.2-2.4 3-2.4 5.5a2.6 2.6 0 0 0 5.2 0C18.8 11 16 10.2 16 8z"/></g>
+
+<!-- stomach / gut -->
+<g id="i-gut"><path d="M9 3.5v4.2c0 2.4-3 3.1-3 6 0 3.1 2.4 5.3 5.2 5.3 3.4 0 5.3-2.3 5.3-4.8 0-3.3-3.3-3.6-3.3-6.4V3.5"/></g>
+<g id="i-drop"><path d="M12 3.2s5.4 6.1 5.4 9.6a5.4 5.4 0 0 1-10.8 0C6.6 9.3 12 3.2 12 3.2z"/></g>
+<g id="i-drop-half"><path d="M12 3.2s5.4 6.1 5.4 9.6a5.4 5.4 0 0 1-10.8 0C6.6 9.3 12 3.2 12 3.2z"/><path d="M6.8 14.4h10.4" stroke-width="1.4"/></g>
+
+<!-- food -->
+<g id="i-cup"><path d="M17.5 8.5h1a3 3 0 0 1 0 6h-1M3.5 8.5h14v7a4 4 0 0 1-4 4h-6a4 4 0 0 1-4-4z"/><path d="M7 3.5v2.2M10.5 3.5v2.2M14 3.5v2.2" stroke-width="1.5"/></g>
+<g id="i-plate"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4.6" stroke-dasharray="2 2"/></g>
+<g id="i-snow"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9"/><path d="M12 6.6l-2 -2M12 6.6l2-2M12 17.4l-2 2M12 17.4l2 2" stroke-width="1.5"/></g>
+<g id="i-shop"><path d="M4 8.5h16l-1.2 11a2 2 0 0 1-2 1.8H7.2a2 2 0 0 1-2-1.8z"/><path d="M8.6 8.5V6.2a3.4 3.4 0 0 1 6.8 0v2.3"/></g>
+<g id="i-clock"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3 1.9"/></g>
+
+<!-- day -->
+<g id="i-chair"><path d="M6 4.5h12v8H6z"/><path d="M4.5 12.5h15M7.5 15.5V20M16.5 15.5V20M6 15.5h12"/></g>
+<g id="i-car"><path d="M4.5 15.5v3h3v-3M16.5 15.5v3h3v-3"/><path d="M3.5 15.5h17v-4l-2-4.5h-11l-2 4.5z"/><path d="M7 13h2M15 13h2" stroke-width="1.6"/></g>
+<g id="i-steps"><path d="M7.5 4.5c1.6 0 2.5 1.4 2.5 3.4S9.2 13 7.5 13 5 11.4 5 8.9 5.9 4.5 7.5 4.5z"/><path d="M5.4 14.2c1.6-.7 3.6-.5 4.2.8.5 1.2-.6 2.4-2.2 2.9s-3 .2-3.4-.9.1-2.3 1.4-2.8z"/><path d="M16.5 7.5c1.6 0 2.5 1.4 2.5 3.4S18.2 16 16.5 16 14 14.4 14 11.9s.9-4.4 2.5-4.4z"/><path d="M14.4 17.2c1.6-.7 3.6-.5 4.2.8.5 1.2-.6 2.4-2.2 2.9s-3 .2-3.4-.9.1-2.3 1.4-2.8z"/></g>
+<g id="i-stretch"><circle cx="12" cy="4.5" r="2"/><path d="M12 6.8v5M12 11.8l-3.5 3.2M12 11.8l3.5 3.2M8.5 15l-1 4.5M15.5 15l1 4.5M7.5 9h9"/></g>
+<g id="i-yoga"><circle cx="12" cy="4.8" r="2"/><path d="M12 7v4.4M12 11.4L7 14M12 11.4l5 2.6M7 14l-1.5 5.5M17 14l1.5 5.5M6 18h12"/></g>
+<g id="i-run"><circle cx="14.5" cy="4.8" r="2"/><path d="M13 8l-3.4 3 2.4 2.6.8 5M12 13.6L8 16l-2.6 4M14.6 10.4l3.4 1.4 2.5-1.6"/></g>
+<g id="i-dumbbell"><path d="M4 9v6M7 7.5v9M17 7.5v9M20 9v6M7 12h10"/></g>
+<g id="i-pelvic"><path d="M5 8c0 5 2.5 9 7 9s7-4 7-9"/><path d="M5 8h14M8.5 8V5.5M15.5 8V5.5"/></g>
+<g id="i-screen"><rect x="3" y="4.5" width="18" height="12" rx="2.2"/><path d="M8.5 20h7M12 16.5V20"/></g>
+<g id="i-gauge-lo"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M12 17l-4.5-3" stroke-width="2"/><circle cx="12" cy="17" r="1.2" fill="currentColor" stroke="none"/></g>
+<g id="i-gauge-mid"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M12 17v-5.5" stroke-width="2"/><circle cx="12" cy="17" r="1.2" fill="currentColor" stroke="none"/></g>
+<g id="i-gauge-hi"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M12 17l4.5-3" stroke-width="2"/><circle cx="12" cy="17" r="1.2" fill="currentColor" stroke="none"/></g>
+<g id="i-glass"><path d="M6.5 3.5h11l-1.2 6.5a4.4 4.4 0 0 1-8.6 0z"/><path d="M12 14.5V20M8.5 20h7"/></g>
+<g id="i-pill"><rect x="3" y="9" width="18" height="6.5" rx="3.25" transform="rotate(-38 12 12.25)"/><path d="M9.2 8.4l5.6 5.6"/></g>
+<g id="i-oil"><path d="M12 3.2s4.6 5.3 4.6 8.4a4.6 4.6 0 0 1-9.2 0C7.4 8.5 12 3.2 12 3.2z"/><path d="M9.8 11.8a2.4 2.4 0 0 0 2.4 2.4" stroke-width="1.4"/></g>
+<g id="i-none"><circle cx="12" cy="12" r="8.6" stroke-dasharray="3 2.6"/><path d="M8.8 12h6.4" stroke-width="1.9"/></g>
+
+<!-- intimacy -->
+<g id="i-lock"><rect x="4.5" y="10.5" width="15" height="10" rx="2.4"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/></g>
+<g id="i-heart"><path d="M12 20.2l-1.1-1.1C6.4 14.9 3.5 12.3 3.5 9a4.6 4.6 0 0 1 8.5-2.5A4.6 4.6 0 0 1 20.5 9c0 3.3-2.9 5.9-7.4 10.1z"/></g>
+<g id="i-person"><circle cx="12" cy="7.5" r="3.4"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></g>
+
+<!-- stool -->
+<g id="i-stool-norm"><rect x="5" y="9" width="14" height="6" rx="3"/></g>
+<g id="i-stool-loose"><path d="M5 10.5c3-1.6 5-1.6 7 0s4 1.6 7 0M5 14c3-1.6 5-1.6 7 0s4 1.6 7 0"/></g>
+<g id="i-stool-hard"><circle cx="8" cy="10" r="2.3"/><circle cx="14.5" cy="9.2" r="2"/><circle cx="11" cy="14.6" r="2.1"/></g>
+
+</defs></svg>
+
+<div class="app">
+
+  <!-- ============ HEADER ============ -->
+  <header class="app-header">
+    <div class="header-row">
+
+      <!-- greeting (top-left) -->
+      <div class="greet">
+        <h1 class="greet-hi" id="greetHi">Hey, today</h1>
+        <p class="greet-sub" id="greetSub">Let's check in.</p>
+      </div>
+
+      <!-- calendar button (top-right) -->
+      <label class="cal-btn" id="calBtn" title="Change date">
+        <span class="cal-top" id="calMonth">SEP</span>
+        <span class="cal-day" id="calDay">12</span>
+        <input type="date" id="dateInput" class="date-native" aria-label="Select date">
+      </label>
+    </div>
+
+    <button type="button" class="today-chip" id="todayBtn" hidden>
+      <svg viewBox="0 0 24 24" class="tc-ico" aria-hidden="true"><use href="#i-sun"/></svg>
+      Back to today
+    </button>
+
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span class="progress-label" id="progressLabel">Step 1 of 7</span>
+        <span class="progress-section" id="progressSection">How I Feel</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuemin="1" aria-valuemax="7" aria-valuenow="1" id="progressBar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ FORM ============ -->
+  <main class="app-main">
+    <form id="trackerForm" novalidate>
+
+      <!-- ======== 1 · HOW I FEEL ======== -->
+      <section class="step is-active" data-step="1" aria-labelledby="s1-title">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-icon tint-mint"><svg viewBox="0 0 24 24"><use href="#i-face-good"/></svg></div>
+            <div>
+              <h2 class="card-title" id="s1-title">How I Feel</h2>
+              <p class="card-sub">A quick check-in on your energy, mood and sleep.</p>
+            </div>
+          </div>
+
+          <div class="fields">
+            <div class="field" data-field="overall">
+              <label class="label">How was today overall? <span class="req">*</span></label>
+              <div class="chips chips-5" role="radiogroup" aria-label="Overall">
+                <button type="button" class="chip" data-name="overall" data-value="Great"><svg viewBox="0 0 24 24" class="ci"><use href="#i-face-great"/></svg><span>Great</span></button>
+                <button type="button" class="chip" data-name="overall" data-value="Good"><svg viewBox="0 0 24 24" class="ci"><use href="#i-face-good"/></svg><span>Good</span></button>
+                <button type="button" class="chip" data-name="overall" data-value="OK"><svg viewBox="0 0 24 24" class="ci"><use href="#i-face-ok"/></svg><span>OK</span></button>
+                <button type="button" class="chip" data-name="overall" data-value="Bad"><svg viewBox="0 0 24 24" class="ci"><use href="#i-face-bad"/></svg><span>Bad</span></button>
+                <button type="button" class="chip" data-name="overall" data-value="Terrible"><svg viewBox="0 0 24 24" class="ci"><use href="#i-face-rough"/></svg><span>Rough</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field" data-field="energy">
+              <label class="label">Energy today? <span class="req">*</span></label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Energy">
+                <button type="button" class="chip" data-name="energy" data-value="High"><svg viewBox="0 0 24 24" class="ci"><use href="#i-batt-full"/></svg><span>High</span></button>
+                <button type="button" class="chip" data-name="energy" data-value="Normal"><svg viewBox="0 0 24 24" class="ci"><use href="#i-batt-mid"/></svg><span>Normal</span></button>
+                <button type="button" class="chip" data-name="energy" data-value="Low"><svg viewBox="0 0 24 24" class="ci"><use href="#i-batt-low"/></svg><span>Low</span></button>
+                <button type="button" class="chip" data-name="energy" data-value="Very low"><svg viewBox="0 0 24 24" class="ci"><use href="#i-batt-empty"/></svg><span>Very low</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field" data-field="mind">
+              <label class="label">Mind today? <span class="req">*</span></label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Mind">
+                <button type="button" class="chip" data-name="mind" data-value="Calm"><svg viewBox="0 0 24 24" class="ci"><use href="#i-mind-calm"/></svg><span>Calm</span></button>
+                <button type="button" class="chip" data-name="mind" data-value="Normal"><svg viewBox="0 0 24 24" class="ci"><use href="#i-mind-normal"/></svg><span>Normal</span></button>
+                <button type="button" class="chip" data-name="mind" data-value="Restless"><svg viewBox="0 0 24 24" class="ci"><use href="#i-mind-restless"/></svg><span>Restless</span></button>
+                <button type="button" class="chip" data-name="mind" data-value="Racing / anxious"><svg viewBox="0 0 24 24" class="ci"><use href="#i-mind-racing"/></svg><span>Racing</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field" data-field="sleep_hours">
+              <label class="label">Hours of sleep <span class="req">*</span></label>
+              <div class="chips chips-5" role="radiogroup" aria-label="Hours of sleep">
+                <button type="button" class="chip chip-num" data-name="sleep_hours" data-value="Under 4"><span class="cn">&lt;4</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="sleep_hours" data-value="4 – 6"><span class="cn">4–6</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="sleep_hours" data-value="6 – 8"><span class="cn">6–8</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="sleep_hours" data-value="8 – 9"><span class="cn">8–9</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="sleep_hours" data-value="Over 9"><span class="cn">9+</span><span>hrs</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field" data-field="sleep_quality">
+              <label class="label">Sleep quality</label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Sleep quality">
+                <button type="button" class="chip" data-name="sleep_quality" data-value="Deep &amp; restful"><svg viewBox="0 0 24 24" class="ci"><use href="#i-zzz"/></svg><span>Deep</span></button>
+                <button type="button" class="chip" data-name="sleep_quality" data-value="OK"><svg viewBox="0 0 24 24" class="ci"><use href="#i-moon"/></svg><span>OK</span></button>
+                <button type="button" class="chip" data-name="sleep_quality" data-value="Broken"><svg viewBox="0 0 24 24" class="ci"><use href="#i-sleep-broken"/></svg><span>Broken</span></button>
+                <button type="button" class="chip" data-name="sleep_quality" data-value="Barely slept"><svg viewBox="0 0 24 24" class="ci"><use href="#i-sun"/></svg><span>Barely</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="woke_at_night">
+              <label class="label">Woke during the night?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Woke at night">
+                <button type="button" class="chip" data-name="woke_at_night" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-eye-closed"/></svg><span>No</span></button>
+                <button type="button" class="chip" data-name="woke_at_night" data-value="Once"><svg viewBox="0 0 24 24" class="ci"><use href="#i-eye-open"/></svg><span>Once</span></button>
+                <button type="button" class="chip" data-name="woke_at_night" data-value="Several times"><svg viewBox="0 0 24 24" class="ci"><use href="#i-eye-multi"/></svg><span>Several</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 2 · BODY ======== -->
+      <section class="step" data-step="2" aria-labelledby="s2-title">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-icon tint-teal"><svg viewBox="0 0 24 24"><use href="#i-neck"/></svg></div>
+            <div>
+              <h2 class="card-title" id="s2-title">Body</h2>
+              <p class="card-sub">Notice how your body feels today.</p>
+            </div>
+          </div>
+
+          <div class="fields">
+            <div class="field" data-field="back_pain">
+              <label class="label">Back pain today? <span class="req">*</span></label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Back pain">
+                <button type="button" class="chip" data-name="back_pain" data-value="None"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-0"/></svg><span>None</span></button>
+                <button type="button" class="chip" data-name="back_pain" data-value="Mild"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-1"/></svg><span>Mild</span></button>
+                <button type="button" class="chip" data-name="back_pain" data-value="Moderate"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-2"/></svg><span>Moderate</span></button>
+                <button type="button" class="chip" data-name="back_pain" data-value="Bad"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-3"/></svg><span>Bad</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field conditional" data-field="back_pain_side" data-show-if="back_pain" data-show-unless="None" hidden>
+              <label class="label">Which side?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Back pain side">
+                <button type="button" class="chip" data-name="back_pain_side" data-value="Left"><svg viewBox="0 0 24 24" class="ci"><use href="#i-side-left"/></svg><span>Left</span></button>
+                <button type="button" class="chip" data-name="back_pain_side" data-value="Right"><svg viewBox="0 0 24 24" class="ci"><use href="#i-side-right"/></svg><span>Right</span></button>
+                <button type="button" class="chip" data-name="back_pain_side" data-value="Both / Centre"><svg viewBox="0 0 24 24" class="ci"><use href="#i-side-both"/></svg><span>Both</span></button>
+              </div>
+            </div>
+
+            <div class="field conditional" data-field="back_pain_worst" data-show-if="back_pain" data-show-unless="None" hidden>
+              <label class="label">When was it worst? <span class="multi-tag">select all</span></label>
+              <div class="chips chips-2 multi" role="group" aria-label="When worst">
+                <button type="button" class="chip" data-name="back_pain_worst" data-multi="1" data-value="On waking"><svg viewBox="0 0 24 24" class="ci"><use href="#i-sun"/></svg><span>On waking</span></button>
+                <button type="button" class="chip" data-name="back_pain_worst" data-multi="1" data-value="After sitting"><svg viewBox="0 0 24 24" class="ci"><use href="#i-chair"/></svg><span>After sitting</span></button>
+                <button type="button" class="chip" data-name="back_pain_worst" data-multi="1" data-value="While standing"><svg viewBox="0 0 24 24" class="ci"><use href="#i-person"/></svg><span>Standing</span></button>
+                <button type="button" class="chip" data-name="back_pain_worst" data-multi="1" data-value="After driving"><svg viewBox="0 0 24 24" class="ci"><use href="#i-car"/></svg><span>Driving</span></button>
+                <button type="button" class="chip" data-name="back_pain_worst" data-multi="1" data-value="Evening"><svg viewBox="0 0 24 24" class="ci"><use href="#i-moon"/></svg><span>Evening</span></button>
+                <button type="button" class="chip" data-name="back_pain_worst" data-multi="1" data-value="After sex"><svg viewBox="0 0 24 24" class="ci"><use href="#i-heart"/></svg><span>After sex</span></button>
+                <button type="button" class="chip" data-name="back_pain_worst" data-multi="1" data-value="All day"><svg viewBox="0 0 24 24" class="ci"><use href="#i-clock"/></svg><span>All day</span></button>
+                <button type="button" class="chip" data-name="back_pain_worst" data-multi="1" data-value="Random"><svg viewBox="0 0 24 24" class="ci"><use href="#i-mind-restless"/></svg><span>Random</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="neck">
+              <label class="label">Neck stiff / painful? <span class="req">*</span></label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Neck">
+                <button type="button" class="chip" data-name="neck" data-value="None"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-0"/></svg><span>None</span></button>
+                <button type="button" class="chip" data-name="neck" data-value="Mild"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-1"/></svg><span>Mild</span></button>
+                <button type="button" class="chip" data-name="neck" data-value="Bad"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-3"/></svg><span>Bad</span></button>
+                <button type="button" class="chip" data-name="neck" data-value="Bad on waking"><svg viewBox="0 0 24 24" class="ci"><use href="#i-sun"/></svg><span>On waking</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field" data-field="joints">
+              <label class="label">Joints cracking a lot?</label>
+              <div class="chips chips-2" role="radiogroup" aria-label="Joints">
+                <button type="button" class="chip" data-name="joints" data-value="Yes"><svg viewBox="0 0 24 24" class="ci"><use href="#i-joint"/></svg><span>Yes</span></button>
+                <button type="button" class="chip" data-name="joints" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="body_stiffness">
+              <label class="label">Morning stiffness</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Morning stiffness">
+                <button type="button" class="chip" data-name="body_stiffness" data-value="None"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-0"/></svg><span>None</span></button>
+                <button type="button" class="chip" data-name="body_stiffness" data-value="Some"><svg viewBox="0 0 24 24" class="ci"><use href="#i-stiff"/></svg><span>Some</span></button>
+                <button type="button" class="chip" data-name="body_stiffness" data-value="A lot"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-3"/></svg><span>A lot</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 3 · GUT ======== -->
+      <section class="step" data-step="3" aria-labelledby="s3-title">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-icon tint-amber"><svg viewBox="0 0 24 24"><use href="#i-gut"/></svg></div>
+            <div>
+              <h2 class="card-title" id="s3-title">Gut</h2>
+              <p class="card-sub">Track your digestion and comfort.</p>
+            </div>
+          </div>
+
+          <div class="fields">
+            <div class="field" data-field="acidity">
+              <label class="label">Acidity today? <span class="req">*</span></label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Acidity">
+                <button type="button" class="chip" data-name="acidity" data-value="None"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-0"/></svg><span>None</span></button>
+                <button type="button" class="chip" data-name="acidity" data-value="Mild"><svg viewBox="0 0 24 24" class="ci"><use href="#i-flame-1"/></svg><span>Mild</span></button>
+                <button type="button" class="chip" data-name="acidity" data-value="Moderate"><svg viewBox="0 0 24 24" class="ci"><use href="#i-flame-2"/></svg><span>Moderate</span></button>
+                <button type="button" class="chip" data-name="acidity" data-value="Bad"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-3"/></svg><span>Bad</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field conditional" data-field="acidity_when" data-show-if="acidity" data-show-unless="None" hidden>
+              <label class="label">When was it worst? <span class="multi-tag">select all</span></label>
+              <div class="chips chips-2 multi" role="group" aria-label="Acidity when">
+                <button type="button" class="chip" data-name="acidity_when" data-multi="1" data-value="Empty stomach"><svg viewBox="0 0 24 24" class="ci"><use href="#i-plate"/></svg><span>Empty stomach</span></button>
+                <button type="button" class="chip" data-name="acidity_when" data-multi="1" data-value="After meals"><svg viewBox="0 0 24 24" class="ci"><use href="#i-gut"/></svg><span>After meals</span></button>
+                <button type="button" class="chip" data-name="acidity_when" data-multi="1" data-value="Night"><svg viewBox="0 0 24 24" class="ci"><use href="#i-moon"/></svg><span>Night</span></button>
+                <button type="button" class="chip" data-name="acidity_when" data-multi="1" data-value="All day"><svg viewBox="0 0 24 24" class="ci"><use href="#i-clock"/></svg><span>All day</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="stool">
+              <label class="label">Stool today <span class="req">*</span></label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Stool">
+                <button type="button" class="chip" data-name="stool" data-value="Normal"><svg viewBox="0 0 24 24" class="ci"><use href="#i-stool-norm"/></svg><span>Normal</span></button>
+                <button type="button" class="chip" data-name="stool" data-value="Loose"><svg viewBox="0 0 24 24" class="ci"><use href="#i-stool-loose"/></svg><span>Loose</span></button>
+                <button type="button" class="chip" data-name="stool" data-value="Very loose"><svg viewBox="0 0 24 24" class="ci"><use href="#i-drop"/></svg><span>Very loose</span></button>
+                <button type="button" class="chip" data-name="stool" data-value="Hard"><svg viewBox="0 0 24 24" class="ci"><use href="#i-stool-hard"/></svg><span>Hard</span></button>
+                <button type="button" class="chip" data-name="stool" data-value="Twice or more"><svg viewBox="0 0 24 24" class="ci"><use href="#i-eye-multi"/></svg><span>Twice+</span></button>
+                <button type="button" class="chip" data-name="stool" data-value="Didn't go"><svg viewBox="0 0 24 24" class="ci"><use href="#i-none"/></svg><span>Didn't go</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field" data-field="stool_burning">
+              <label class="label">Burning during stool?</label>
+              <div class="chips chips-2" role="radiogroup" aria-label="Burning">
+                <button type="button" class="chip" data-name="stool_burning" data-value="Yes"><svg viewBox="0 0 24 24" class="ci"><use href="#i-flame-1"/></svg><span>Yes</span></button>
+                <button type="button" class="chip" data-name="stool_burning" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="bloating">
+              <label class="label">Bloating / gas?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Bloating">
+                <button type="button" class="chip" data-name="bloating" data-value="None"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-0"/></svg><span>None</span></button>
+                <button type="button" class="chip" data-name="bloating" data-value="Mild"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-1"/></svg><span>Mild</span></button>
+                <button type="button" class="chip" data-name="bloating" data-value="Bad"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-3"/></svg><span>Bad</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="water_intake">
+              <label class="label">Water intake</label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Water">
+                <button type="button" class="chip" data-name="water_intake" data-value="Less than 1 L"><svg viewBox="0 0 24 24" class="ci"><use href="#i-drop-half"/></svg><span>&lt;1 L</span></button>
+                <button type="button" class="chip" data-name="water_intake" data-value="1 – 2 L"><svg viewBox="0 0 24 24" class="ci"><use href="#i-drop"/></svg><span>1–2 L</span></button>
+                <button type="button" class="chip" data-name="water_intake" data-value="2 – 3 L"><svg viewBox="0 0 24 24" class="ci"><use href="#i-drop"/></svg><span>2–3 L</span></button>
+                <button type="button" class="chip" data-name="water_intake" data-value="More than 3 L"><svg viewBox="0 0 24 24" class="ci"><use href="#i-drop"/></svg><span>3 L+</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 4 · FOOD ======== -->
+      <section class="step" data-step="4" aria-labelledby="s4-title">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-icon tint-mint"><svg viewBox="0 0 24 24"><use href="#i-plate"/></svg></div>
+            <div>
+              <h2 class="card-title" id="s4-title">Food</h2>
+              <p class="card-sub">A simple snapshot of today's meals and habits.</p>
+            </div>
+          </div>
+
+          <div class="fields">
+            <div class="field" data-field="lunch">
+              <label class="label" for="lunch">Lunch</label>
+              <textarea id="lunch" name="lunch" class="textarea" rows="2" placeholder="e.g. Roti, dal, rice, bhindi sabzi, curd"></textarea>
+            </div>
+
+            <div class="field" data-field="dinner">
+              <label class="label" for="dinner">Dinner</label>
+              <textarea id="dinner" name="dinner" class="textarea" rows="2" placeholder="e.g. Khichdi, salad"></textarea>
+            </div>
+
+            <div class="field" data-field="fried_spicy">
+              <label class="label">Ate fried / spicy / sour?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Fried spicy sour">
+                <button type="button" class="chip" data-name="fried_spicy" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+                <button type="button" class="chip" data-name="fried_spicy" data-value="A little"><svg viewBox="0 0 24 24" class="ci"><use href="#i-flame-1"/></svg><span>A little</span></button>
+                <button type="button" class="chip" data-name="fried_spicy" data-value="A lot"><svg viewBox="0 0 24 24" class="ci"><use href="#i-flame-2"/></svg><span>A lot</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="cold_food">
+              <label class="label">Ate cold / fridge-cold?</label>
+              <div class="chips chips-2" role="radiogroup" aria-label="Cold food">
+                <button type="button" class="chip" data-name="cold_food" data-value="Yes"><svg viewBox="0 0 24 24" class="ci"><use href="#i-snow"/></svg><span>Yes</span></button>
+                <button type="button" class="chip" data-name="cold_food" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="ate_out">
+              <label class="label">Ate out / street food?</label>
+              <div class="chips chips-2" role="radiogroup" aria-label="Ate out">
+                <button type="button" class="chip" data-name="ate_out" data-value="Yes"><svg viewBox="0 0 24 24" class="ci"><use href="#i-shop"/></svg><span>Yes</span></button>
+                <button type="button" class="chip" data-name="ate_out" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="dinner_time">
+              <label class="label">Dinner timing</label>
+              <div class="chips chips-5" role="radiogroup" aria-label="Dinner timing">
+                <button type="button" class="chip chip-num" data-name="dinner_time" data-value="Before 7 pm"><span class="cn">&lt;7</span><span>pm</span></button>
+                <button type="button" class="chip chip-num" data-name="dinner_time" data-value="7 – 8 pm"><span class="cn">7–8</span><span>pm</span></button>
+                <button type="button" class="chip chip-num" data-name="dinner_time" data-value="8 – 8:30 pm"><span class="cn">8–8.30</span><span>pm</span></button>
+                <button type="button" class="chip chip-num" data-name="dinner_time" data-value="8:30 – 9 pm"><span class="cn">8.30–9</span><span>pm</span></button>
+                <button type="button" class="chip chip-num" data-name="dinner_time" data-value="After 9 pm"><span class="cn">9+</span><span>pm</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="tea_coffee">
+              <label class="label">Tea / Coffee</label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Tea coffee">
+                <button type="button" class="chip" data-name="tea_coffee" data-value="None"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>None</span></button>
+                <button type="button" class="chip" data-name="tea_coffee" data-value="1 – 2"><svg viewBox="0 0 24 24" class="ci"><use href="#i-cup"/></svg><span>1–2</span></button>
+                <button type="button" class="chip" data-name="tea_coffee" data-value="3 – 4"><svg viewBox="0 0 24 24" class="ci"><use href="#i-cup"/></svg><span>3–4</span></button>
+                <button type="button" class="chip" data-name="tea_coffee" data-value="5+"><svg viewBox="0 0 24 24" class="ci"><use href="#i-cup"/></svg><span>5+</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="last_caffeine">
+              <label class="label" for="last_caffeine">Last caffeine</label>
+              <div class="select-wrap">
+                <select id="last_caffeine" name="last_caffeine" class="select">
+                  <option value="" disabled selected>Select</option>
+                  <option>None today</option><option>Before 12 pm</option><option>12 – 2 pm</option>
+                  <option>2 – 4 pm</option><option>4 – 6 pm</option><option>After 6 pm</option>
+                </select>
+              </div>
+              <p class="hint">Late caffeine can affect sleep.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 5 · INTIMACY ======== -->
+      <section class="step" data-step="5" aria-labelledby="s5-title">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-icon tint-violet"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg></div>
+            <div>
+              <h2 class="card-title" id="s5-title">Intimacy</h2>
+              <p class="card-sub">Private and optional.</p>
+            </div>
+          </div>
+
+          <div class="private-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg>
+            <span>Only you see this. Leave blank if you prefer.</span>
+          </div>
+
+          <div class="fields">
+            <div class="field" data-field="sex_today">
+              <label class="label">Sex / release today?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Sex today">
+                <button type="button" class="chip" data-name="sex_today" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+                <button type="button" class="chip" data-name="sex_today" data-value="Yes – intercourse"><svg viewBox="0 0 24 24" class="ci"><use href="#i-heart"/></svg><span>Intercourse</span></button>
+                <button type="button" class="chip" data-name="sex_today" data-value="Yes – solo"><svg viewBox="0 0 24 24" class="ci"><use href="#i-person"/></svg><span>Solo</span></button>
+              </div>
+            </div>
+
+            <div class="field conditional" data-field="porn" data-show-if="sex_today" data-show-unless="No" hidden>
+              <label class="label">Watched porn?</label>
+              <div class="chips chips-2" role="radiogroup" aria-label="Porn">
+                <button type="button" class="chip" data-name="porn" data-value="Yes"><svg viewBox="0 0 24 24" class="ci"><use href="#i-screen"/></svg><span>Yes</span></button>
+                <button type="button" class="chip" data-name="porn" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+              </div>
+            </div>
+
+            <div class="divider-soft"><span>If you had sex in the last 2 days</span></div>
+
+            <div class="field" data-field="back_pain_after_sex">
+              <label class="label">Back pain worse after sex?</label>
+              <div class="chips chips-2" role="radiogroup" aria-label="Back pain after sex">
+                <button type="button" class="chip" data-name="back_pain_after_sex" data-value="No sex recently"><svg viewBox="0 0 24 24" class="ci"><use href="#i-none"/></svg><span>N/A</span></button>
+                <button type="button" class="chip" data-name="back_pain_after_sex" data-value="Not worse"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-0"/></svg><span>Not worse</span></button>
+                <button type="button" class="chip" data-name="back_pain_after_sex" data-value="A bit worse"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-1"/></svg><span>A bit worse</span></button>
+                <button type="button" class="chip" data-name="back_pain_after_sex" data-value="Much worse"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-3"/></svg><span>Much worse</span></button>
+              </div>
+              <p class="hint">The pain often shows up the next day — not the same day.</p>
+            </div>
+
+            <div class="field" data-field="drained_after_sex">
+              <label class="label">Drained after sex?</label>
+              <div class="chips chips-2" role="radiogroup" aria-label="Drained after sex">
+                <button type="button" class="chip" data-name="drained_after_sex" data-value="No sex recently"><svg viewBox="0 0 24 24" class="ci"><use href="#i-none"/></svg><span>N/A</span></button>
+                <button type="button" class="chip" data-name="drained_after_sex" data-value="Not drained"><svg viewBox="0 0 24 24" class="ci"><use href="#i-batt-full"/></svg><span>Not drained</span></button>
+                <button type="button" class="chip" data-name="drained_after_sex" data-value="A bit drained"><svg viewBox="0 0 24 24" class="ci"><use href="#i-batt-low"/></svg><span>A bit</span></button>
+                <button type="button" class="chip" data-name="drained_after_sex" data-value="Very drained"><svg viewBox="0 0 24 24" class="ci"><use href="#i-batt-empty"/></svg><span>Very</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 6 · MY DAY ======== -->
+      <section class="step" data-step="6" aria-labelledby="s6-title">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-icon tint-teal"><svg viewBox="0 0 24 24"><use href="#i-clock"/></svg></div>
+            <div>
+              <h2 class="card-title" id="s6-title">My Day</h2>
+              <p class="card-sub">Movement, sitting, activity and daily habits.</p>
+            </div>
+          </div>
+
+          <div class="fields">
+            <div class="field" data-field="sitting">
+              <label class="label">Sitting today <span class="req">*</span></label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Sitting">
+                <button type="button" class="chip" data-name="sitting" data-value="Little"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-0"/></svg><span>Little</span></button>
+                <button type="button" class="chip" data-name="sitting" data-value="Normal"><svg viewBox="0 0 24 24" class="ci"><use href="#i-chair"/></svg><span>Normal</span></button>
+                <button type="button" class="chip" data-name="sitting" data-value="A lot"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-2"/></svg><span>A lot</span></button>
+                <button type="button" class="chip" data-name="sitting" data-value="All day"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-3"/></svg><span>All day</span></button>
+              </div>
+              <p class="err" hidden>Please choose an option.</p>
+            </div>
+
+            <div class="field" data-field="drove_km">
+              <label class="label">Drove car — approx. km</label>
+              <div class="chips chips-4" role="radiogroup" aria-label="Drove km">
+                <button type="button" class="chip" data-name="drove_km" data-value="Did not drive"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>None</span></button>
+                <button type="button" class="chip chip-num" data-name="drove_km" data-value="Under 5 km"><span class="cn">&lt;5</span><span>km</span></button>
+                <button type="button" class="chip chip-num" data-name="drove_km" data-value="5 – 15 km"><span class="cn">5–15</span><span>km</span></button>
+                <button type="button" class="chip chip-num" data-name="drove_km" data-value="15 – 30 km"><span class="cn">15–30</span><span>km</span></button>
+                <button type="button" class="chip chip-num" data-name="drove_km" data-value="30 – 50 km"><span class="cn">30–50</span><span>km</span></button>
+                <button type="button" class="chip chip-num" data-name="drove_km" data-value="50 – 100 km"><span class="cn">50–100</span><span>km</span></button>
+                <button type="button" class="chip chip-num" data-name="drove_km" data-value="Over 100 km"><span class="cn">100+</span><span>km</span></button>
+              </div>
+              <p class="hint">Clutch and seat posture can affect the lower back.</p>
+            </div>
+
+            <div class="field" data-field="steps">
+              <label class="label">Walked — steps</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Steps">
+                <button type="button" class="chip chip-num" data-name="steps" data-value="Under 1,000"><span class="cn">&lt;1k</span><span>steps</span></button>
+                <button type="button" class="chip chip-num" data-name="steps" data-value="1,000 – 3,000"><span class="cn">1–3k</span><span>steps</span></button>
+                <button type="button" class="chip chip-num" data-name="steps" data-value="3,000 – 5,000"><span class="cn">3–5k</span><span>steps</span></button>
+                <button type="button" class="chip chip-num" data-name="steps" data-value="5,000 – 8,000"><span class="cn">5–8k</span><span>steps</span></button>
+                <button type="button" class="chip chip-num" data-name="steps" data-value="8,000 – 10,000"><span class="cn">8–10k</span><span>steps</span></button>
+                <button type="button" class="chip chip-num" data-name="steps" data-value="Over 10,000"><span class="cn">10k+</span><span>steps</span></button>
+              </div>
+              <p class="hint">From your phone or watch, if available.</p>
+            </div>
+
+            <div class="field" data-field="exercise">
+              <label class="label">Exercise / yoga / stretches? <span class="multi-tag">select all</span></label>
+              <div class="chips chips-3 multi" role="group" aria-label="Exercise">
+                <button type="button" class="chip" data-name="exercise" data-multi="1" data-value="None"><svg viewBox="0 0 24 24" class="ci"><use href="#i-none"/></svg><span>None</span></button>
+                <button type="button" class="chip" data-name="exercise" data-multi="1" data-value="Stretches"><svg viewBox="0 0 24 24" class="ci"><use href="#i-stretch"/></svg><span>Stretches</span></button>
+                <button type="button" class="chip" data-name="exercise" data-multi="1" data-value="Yoga"><svg viewBox="0 0 24 24" class="ci"><use href="#i-yoga"/></svg><span>Yoga</span></button>
+                <button type="button" class="chip" data-name="exercise" data-multi="1" data-value="Walk / cardio"><svg viewBox="0 0 24 24" class="ci"><use href="#i-run"/></svg><span>Cardio</span></button>
+                <button type="button" class="chip" data-name="exercise" data-multi="1" data-value="Strength"><svg viewBox="0 0 24 24" class="ci"><use href="#i-dumbbell"/></svg><span>Strength</span></button>
+                <button type="button" class="chip" data-name="exercise" data-multi="1" data-value="Pelvic floor"><svg viewBox="0 0 24 24" class="ci"><use href="#i-pelvic"/></svg><span>Pelvic</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="screen_time">
+              <label class="label">Screen time</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Screen time">
+                <button type="button" class="chip chip-num" data-name="screen_time" data-value="Under 2 hrs"><span class="cn">&lt;2</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="screen_time" data-value="2 – 4 hrs"><span class="cn">2–4</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="screen_time" data-value="4 – 6 hrs"><span class="cn">4–6</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="screen_time" data-value="6 – 8 hrs"><span class="cn">6–8</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="screen_time" data-value="8 – 10 hrs"><span class="cn">8–10</span><span>hrs</span></button>
+                <button type="button" class="chip chip-num" data-name="screen_time" data-value="Over 10 hrs"><span class="cn">10+</span><span>hrs</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="stress">
+              <label class="label">Stressful day?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Stress">
+                <button type="button" class="chip" data-name="stress" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-gauge-lo"/></svg><span>No</span></button>
+                <button type="button" class="chip" data-name="stress" data-value="A little"><svg viewBox="0 0 24 24" class="ci"><use href="#i-gauge-mid"/></svg><span>A little</span></button>
+                <button type="button" class="chip" data-name="stress" data-value="Very"><svg viewBox="0 0 24 24" class="ci"><use href="#i-gauge-hi"/></svg><span>Very</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="alcohol">
+              <label class="label">Alcohol?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Alcohol">
+                <button type="button" class="chip" data-name="alcohol" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+                <button type="button" class="chip" data-name="alcohol" data-value="A little"><svg viewBox="0 0 24 24" class="ci"><use href="#i-glass"/></svg><span>A little</span></button>
+                <button type="button" class="chip" data-name="alcohol" data-value="A lot"><svg viewBox="0 0 24 24" class="ci"><use href="#i-lvl-3"/></svg><span>A lot</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="supplements">
+              <label class="label">Supplements / herbs?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Supplements">
+                <button type="button" class="chip" data-name="supplements" data-value="All"><svg viewBox="0 0 24 24" class="ci"><use href="#i-yes"/></svg><span>All</span></button>
+                <button type="button" class="chip" data-name="supplements" data-value="Some"><svg viewBox="0 0 24 24" class="ci"><use href="#i-pill"/></svg><span>Some</span></button>
+                <button type="button" class="chip" data-name="supplements" data-value="None"><svg viewBox="0 0 24 24" class="ci"><use href="#i-none"/></svg><span>None</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="oil_massage">
+              <label class="label">Oil massage / abhyanga?</label>
+              <div class="chips chips-3" role="radiogroup" aria-label="Oil massage">
+                <button type="button" class="chip" data-name="oil_massage" data-value="No"><svg viewBox="0 0 24 24" class="ci"><use href="#i-no"/></svg><span>No</span></button>
+                <button type="button" class="chip" data-name="oil_massage" data-value="Body"><svg viewBox="0 0 24 24" class="ci"><use href="#i-oil"/></svg><span>Body</span></button>
+                <button type="button" class="chip" data-name="oil_massage" data-value="Head / feet"><svg viewBox="0 0 24 24" class="ci"><use href="#i-drop"/></svg><span>Head / feet</span></button>
+              </div>
+            </div>
+
+            <div class="field" data-field="notes">
+              <label class="label" for="notes">Anything unusual?</label>
+              <textarea id="notes" name="notes" class="textarea" rows="2" placeholder="Optional — one line"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======== 7 · REVIEW ======== -->
+      <section class="step" data-step="7" aria-labelledby="s7-title">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-icon tint-mint"><svg viewBox="0 0 24 24"><use href="#i-yes"/></svg></div>
+            <div>
+              <h2 class="card-title" id="s7-title">Review</h2>
+              <p class="card-sub">Tap any section to go back and edit.</p>
+            </div>
+          </div>
+          <div class="review-list" id="reviewList"></div>
+          <div class="save-note" id="saveNote" hidden></div>
+        </div>
+      </section>
+
+    </form>
+  </main>
+
+  <!-- ============ NAV ============ -->
+  <nav class="app-nav" id="appNav" aria-label="Form navigation">
+    <button type="button" class="btn btn-glass btn-icon" id="backBtn" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button type="button" class="btn btn-primary" id="nextBtn">
+      Next
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </nav>
+
+</div>
+
+<!-- ============ DONE ============ -->
+<div class="done-screen" id="doneScreen" hidden>
+  <div class="done-inner">
+    <div class="done-ring">
+      <svg viewBox="0 0 80 80" aria-hidden="true">
+        <circle class="ring-bg" cx="40" cy="40" r="34"/>
+        <circle class="ring-fg" cx="40" cy="40" r="34"/>
+      </svg>
+      <svg class="done-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6.5 9.6 17 4 11.5"/></svg>
+    </div>
+    <p class="done-eyebrow" id="doneEyebrow">Entry saved</p>
+    <h2 class="done-slogan" id="doneSlogan">Small steps, every day.</h2>
+    <p class="done-sub" id="doneSub">Your entry has been recorded.</p>
+    <div class="done-actions">
+      <button type="button" class="btn btn-glass" id="doneEditBtn">Edit entry</button>
+      <button type="button" class="btn btn-primary" id="doneNewBtn">Another date</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6.5 9.6 17 4 11.5"/></svg>
+  <span id="toastMsg">Saved</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js?v=4"></script>
+</body>
+</html>
