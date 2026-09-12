@@ -236,6 +236,16 @@ const SUPABASE_ANON_KEY = "sb_publishable_Dk4ZEKzwB6z1L8u5zqIuDA_5kVLQ0Xg";
       c.classList.remove("is-selected");
       c.setAttribute("aria-pressed","false");
     });
+    document.querySelectorAll(".seg-btn.is-selected").forEach(function(b){
+      b.classList.remove("is-selected");
+      b.setAttribute("aria-pressed","false");
+    });
+    document.querySelectorAll(".toggle[aria-checked='true']").forEach(function(t){
+      t.setAttribute("aria-checked","false");
+    });
+    document.querySelectorAll(".check-list input[type=checkbox]:checked").forEach(function(cb){
+      cb.checked = false;
+    });
     document.querySelectorAll("select").forEach(function(s){ s.selectedIndex = 0; });
     document.querySelectorAll("textarea").forEach(function(t){ t.value = ""; });
     document.querySelectorAll(".field.has-error").forEach(function(f){ clearFieldError(f); });
@@ -266,6 +276,24 @@ const SUPABASE_ANON_KEY = "sb_publishable_Dk4ZEKzwB6z1L8u5zqIuDA_5kVLQ0Xg";
           chip.setAttribute("aria-pressed","true");
         }
       });
+      // seg-btn group
+      document.querySelectorAll('.seg-btn[data-name="' + name + '"]').forEach(function(btn){
+        if (values.indexOf(btn.getAttribute("data-value")) !== -1) {
+          btn.classList.add("is-selected");
+          btn.setAttribute("aria-pressed","true");
+        }
+      });
+      // toggle
+      document.querySelectorAll('.toggle[data-name="' + name + '"]').forEach(function(tog){
+        var isOn = (val === tog.getAttribute("data-value-on"));
+        tog.setAttribute("aria-checked", isOn ? "true" : "false");
+      });
+      // checkbox list
+      if (Array.isArray(val)) {
+        document.querySelectorAll('input[type=checkbox][data-name="' + name + '"]').forEach(function(cb){
+          cb.checked = (val.indexOf(cb.getAttribute("data-value")) !== -1);
+        });
+      }
     });
 
     updateConditionals();
@@ -361,40 +389,95 @@ const SUPABASE_ANON_KEY = "sb_publishable_Dk4ZEKzwB6z1L8u5zqIuDA_5kVLQ0Xg";
   }
 
   /* ============================================================
-     CHIPS
+     CHIPS + SEGMENTED + TOGGLES + CHECKBOXES
      ============================================================ */
   function initChips(){
     document.addEventListener("click", function(e){
+
+      /* ---- chip ---- */
       var chip = e.target.closest ? e.target.closest(".chip") : null;
-      if (!chip) return;
-      e.preventDefault();
+      if (chip) {
+        e.preventDefault();
+        var name    = chip.getAttribute("data-name");
+        var value   = chip.getAttribute("data-value");
+        var isMulti = chip.getAttribute("data-multi") === "1";
+        var group   = chip.closest(".chips");
+        if (!name || !group) return;
 
-      var name    = chip.getAttribute("data-name");
-      var value   = chip.getAttribute("data-value");
-      var isMulti = chip.getAttribute("data-multi") === "1";
-      var group   = chip.closest(".chips");
-      if (!name || !group) return;
+        if (isMulti) {
+          chip.classList.toggle("is-selected");
+          var picked = [];
+          group.querySelectorAll(".chip.is-selected").forEach(function(c){
+            picked.push(c.getAttribute("data-value"));
+          });
+          chipState[name] = picked;
+        } else {
+          group.querySelectorAll(".chip").forEach(function(c){
+            c.classList.remove("is-selected");
+            c.setAttribute("aria-pressed","false");
+          });
+          chip.classList.add("is-selected");
+          chip.setAttribute("aria-pressed","true");
+          chipState[name] = value;
+        }
 
-      if (isMulti) {
-        chip.classList.toggle("is-selected");
-        var picked = [];
-        group.querySelectorAll(".chip.is-selected").forEach(function(c){
-          picked.push(c.getAttribute("data-value"));
-        });
-        chipState[name] = picked;
-      } else {
-        group.querySelectorAll(".chip").forEach(function(c){
-          c.classList.remove("is-selected");
-          c.setAttribute("aria-pressed","false");
-        });
-        chip.classList.add("is-selected");
-        chip.setAttribute("aria-pressed","true");
-        chipState[name] = value;
+        if (navigator.vibrate) { try { navigator.vibrate(8); } catch(x){} }
+        clearFieldError(chip.closest(".field"));
+        updateConditionals();
+        return;
       }
 
-      if (navigator.vibrate) { try { navigator.vibrate(8); } catch(x){} }
+      /* ---- segmented button ---- */
+      var segBtn = e.target.closest ? e.target.closest(".seg-btn") : null;
+      if (segBtn) {
+        e.preventDefault();
+        var name  = segBtn.getAttribute("data-name");
+        var value = segBtn.getAttribute("data-value");
+        var group = segBtn.closest(".seg");
+        if (!name || !group) return;
 
-      clearFieldError(chip.closest(".field"));
+        group.querySelectorAll(".seg-btn").forEach(function(b){
+          b.classList.remove("is-selected");
+          b.setAttribute("aria-pressed","false");
+        });
+        segBtn.classList.add("is-selected");
+        segBtn.setAttribute("aria-pressed","true");
+        chipState[name] = value;
+
+        if (navigator.vibrate) { try { navigator.vibrate(8); } catch(x){} }
+        clearFieldError(segBtn.closest(".field"));
+        updateConditionals();
+        return;
+      }
+
+      /* ---- toggle switch ---- */
+      var toggle = e.target.closest ? e.target.closest(".toggle") : null;
+      if (toggle) {
+        e.preventDefault();
+        var name     = toggle.getAttribute("data-name");
+        var valueOn  = toggle.getAttribute("data-value-on");
+        var valueOff = toggle.getAttribute("data-value-off");
+        var isOn     = toggle.getAttribute("aria-checked") !== "true";
+        toggle.setAttribute("aria-checked", isOn ? "true" : "false");
+        chipState[name] = isOn ? valueOn : valueOff;
+        if (navigator.vibrate) { try { navigator.vibrate(8); } catch(x){} }
+        updateConditionals();
+        return;
+      }
+    });
+
+    /* ---- checkbox list (change, not click) ---- */
+    document.addEventListener("change", function(e){
+      var cb = e.target;
+      if (!cb || cb.type !== "checkbox" || !cb.getAttribute("data-name")) return;
+      var name  = cb.getAttribute("data-name");
+      var group = cb.closest(".check-list");
+      if (!group) return;
+      var picked = [];
+      group.querySelectorAll("input[type=checkbox]:checked").forEach(function(c){
+        picked.push(c.getAttribute("data-value"));
+      });
+      chipState[name] = picked;
       updateConditionals();
     });
   }
@@ -524,6 +607,17 @@ const SUPABASE_ANON_KEY = "sb_publishable_Dk4ZEKzwB6z1L8u5zqIuDA_5kVLQ0Xg";
       if (field && field.hidden) return null;
       var v = input.value ? input.value.trim() : "";
       return v || null;
+    }
+    // Toggle: if never interacted with, read from aria-checked directly
+    var tog = document.querySelector('.toggle[data-name="'+name+'"]');
+    if (tog) {
+      var field = tog.closest(".field");
+      if (field && field.hidden) return null;
+      // Only record if it was explicitly set (stored in chipState)
+      var cv = chipState[name];
+      if (cv !== undefined) return cv;
+      // Not touched — return off value as default (No)
+      return tog.getAttribute("data-value-off") || null;
     }
     var cv = chipState[name];
     if (cv === undefined || cv === null) return null;
